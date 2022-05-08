@@ -65,6 +65,9 @@ router.beforeEach((to, from, next) => {
         if(to.path === '/roomtable'){
             role !== 'admin' ? next() : next('/403');
         }
+        if(to.path === '/charts'){
+            role !== 'admin' ? next() : next('/403');
+        }
     }
 })
 

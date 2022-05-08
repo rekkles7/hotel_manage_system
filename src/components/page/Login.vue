@@ -108,6 +108,10 @@ export default {
             this.$store.dispatch('Login', user).then(res=>{
               this.$router.push('/')
             }).catch(()=>{
+              this.$message({
+                message: '登录信息有误',
+                type: 'error'
+              });
               this.getCode()
             })
           }else alert('请按要求完善登陆信息！')
@@ -148,7 +152,7 @@ export default {
     line-height: 50px;
     text-align: center;
     font-size: 20px;
-    color: #fff;
+    color: black;
     border-bottom: 1px solid #ddd;
 }
 .ms-login {

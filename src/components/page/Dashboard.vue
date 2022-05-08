@@ -12,11 +12,11 @@
                     </div>
                     <div class="user-info-list">
                         上次登录时间：
-                        <span>2019-11-01</span>
+                        <span>2022-04-15</span>
                     </div>
                     <div class="user-info-list">
                         上次登录地点：
-                        <span>东莞</span>
+                        <span>湖北宜昌</span>
                     </div>
                 </el-card>
                 <el-card shadow="hover" style="height:252px;">
@@ -176,21 +176,21 @@ export default {
             options: {
                 type: 'bar',
                 title: {
-                    text: '最近一周各品类销售图'
+                    text: '最近一周酒店热销榜单'
                 },
                 xRorate: 25,
                 labels: ['周一', '周二', '周三', '周四', '周五'],
                 datasets: [
                     {
-                        label: '家电',
-                        data: [234, 278, 270, 190, 230]
+                        label: '宜昌万达酒店',
+                        data: [250, 278, 270, 190, 230]
                     },
                     {
-                        label: '百货',
+                        label: '宜昌嘉华酒店',
                         data: [164, 178, 190, 135, 160]
                     },
                     {
-                        label: '食品',
+                        label: '金岛新悦酒店',
                         data: [144, 198, 150, 235, 120]
                     }
                 ]
@@ -198,20 +198,20 @@ export default {
             options2: {
                 type: 'line',
                 title: {
-                    text: '最近几个月各品类销售趋势图'
+                    text: '最近一周酒店类型热销榜单'
                 },
-                labels: ['6月', '7月', '8月', '9月', '10月'],
+                labels: ['周一', '周二', '周三', '周四', '周五'],
                 datasets: [
                     {
-                        label: '家电',
+                        label: '快捷酒店',
                         data: [234, 278, 270, 190, 230]
                     },
                     {
-                        label: '百货',
+                        label: '星级酒店',
                         data: [164, 178, 150, 135, 160]
                     },
                     {
-                        label: '食品',
+                        label: '商务酒店',
                         data: [74, 118, 200, 235, 90]
                     }
                 ]

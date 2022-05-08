@@ -45,9 +45,24 @@ export default new Router({
                     meta: { title: '房型管理' ,permission: true}
                 },
                 {
+                    path: '/usercenter',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/UserCenter.vue'),
+                    meta: { title: '个人中心'}
+                },
+                {
                     path: '/tabs',
                     component: () => import(/* webpackChunkName: "tabs" */ '../components/page/Tabs.vue'),
                     meta: { title: 'tab选项卡' }
+                },
+                {
+                    path: '/checkintable',
+                    component: () => import(/* webpackChunkName: "form" */ '../components/page/CheckInTable.vue'),
+                    meta: { title: '入住信息' }
+                },
+                {
+                    path: '/commenttable',
+                    component: () => import(/* webpackChunkName: "form" */ '../components/page/CommentTable.vue'),
+                    meta: { title: '评论管理' }
                 },
                 {
                     path: '/form',
@@ -76,7 +91,7 @@ export default new Router({
                     // vue-schart组件
                     path: '/charts',
                     component: () => import(/* webpackChunkName: "chart" */ '../components/page/BaseCharts.vue'),
-                    meta: { title: 'schart图表' }
+                    meta: { title: '数据报表',permission: true }
                 },
                 {
                     // 拖拽列表组件

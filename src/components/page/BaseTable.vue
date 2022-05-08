@@ -16,7 +16,7 @@
             @click="updateOperation('delete')"
         >批量删除
         </el-button>
-        <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
+        <el-input v-model="query.username" placeholder="用户名" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
         <el-button type="success" icon="el-icon-plus" @click="updateOperation('post')">新增</el-button>
         <el-button type="danger" icon="el-icon-edit" @click="updateOperation('put')">修改</el-button>
@@ -88,22 +88,6 @@
         ></el-pagination>
       </div>
     </div>
-
-    <!-- 编辑弹出框 -->
-    <!--        <el-dialog title="编辑" :visible.sync="editVisible" width="30%">-->
-    <!--            <el-form ref="form" :model="form" label-width="70px">-->
-    <!--                <el-form-item label="用户名">-->
-    <!--                    <el-input v-model="form.name"></el-input>-->
-    <!--                </el-form-item>-->
-    <!--                <el-form-item label="地址">-->
-    <!--                    <el-input v-model="form.address"></el-input>-->
-    <!--                </el-form-item>-->
-    <!--            </el-form>-->
-    <!--            <span slot="footer" class="dialog-footer">-->
-    <!--                <el-button @click="editVisible = false">取 消</el-button>-->
-    <!--                <el-button type="primary" @click="saveEdit">确 定</el-button>-->
-    <!--            </span>-->
-    <!--        </el-dialog>-->
     <el-dialog append-to-body title="用户信息" :visible.sync="dialogFormVisible" width="680px">
       <el-form :model="form" :inline="true" size="small" label-width="66px">
         <el-form-item label="用户名">
@@ -127,7 +111,6 @@
         <el-form-item label="角色" prop="roles">
           <el-select
               v-model="roleDatas"
-              multiple
               placeholder="请选择角色"
               @change="changeRole"
           >
@@ -136,6 +119,20 @@
                 :key="item.name"
                 :label="item.name"
                 :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="酒店" prop="hotel">
+          <el-select
+              v-model="hotelDatas"
+              placeholder="请选择酒店"
+              @change="changeHotel"
+          >
+            <el-option
+                v-for="item in hotels"
+                :key="item.hotelName"
+                :label="item.hotelName"
+                :value="item.hotelId"
             />
           </el-select>
         </el-form-item>
@@ -157,8 +154,7 @@ export default {
   data() {
     return {
       query: {
-        address: '',
-        name: '',
+        username: '',
         pageIndex: 1,
         pageSize: 10
       },
@@ -170,8 +166,10 @@ export default {
       idx: -1,
       id: -1,
       roles: [],
+      hotels: [],
       selectData: [],
       roleDatas: [],
+      hotelDatas: '',
       form: {
         //以下是示例数据，可以删除
         username: 'testJeff520',
@@ -180,12 +178,9 @@ export default {
         id: null,
         phone: 13242842112,
         roles: [{id: 2}],
+        hotelId: '',
         enabled: true,
         gender: '男',
-        //以下是修改用户信息才需要传给后端的，新增的时候不用
-        // createTime: "2021-08-17 20:00:35",
-        // createBy: "admin",
-        // updateTime: "2021-08-17 20:05:45"
       }
     };
   },
@@ -215,13 +210,23 @@ export default {
         return {id: value}
       })
     },
+    changeHotel() {
+      this.form.hotelId = this.hotelDatas
+    },
+    getHotel(){
+      this.$request.get('user/hotel/selectAllHotel').then(res => {
+        this.hotels = res.data.data
+      })
+    },
     getRole() {
       this.$request.get('api/roles/all').then(res => {
         this.roles = res.data
       })
     },
     mapForm(selectRow) {
-      this.roleDatas = selectRow.roles.map(value => value.id)
+      console.log(selectRow)
+      this.roleDatas = selectRow.roles.map(value => value.name)
+      this.hotelDatas = selectRow.hotelId
       this.form = selectRow
     },
     resetPassword() {
@@ -239,7 +244,10 @@ export default {
       if (op === 'put') this.mapForm(this.selectData[0])
       this.$store.commit('SET_OP', op)
       this.dialogFormVisible = op !== 'delete'
-      if (op !== 'delete') this.getRole()
+      if (op !== 'delete'){
+        this.getRole();
+        this.getHotel();
+      }
       else {
         this.$confirm('确定要删除吗？', '提示', {
           type: 'warning'
@@ -253,10 +261,15 @@ export default {
       }
     },
     getUserInfo() {
-      this.$request.get('api/users').then(res => {
-        this.tableData = res.data.content
-        console.log(res.data.length)
-        this.pageTotal = res.data.content.length || 50
+      this.$request.get('api/users/selectUser',{
+        params:{
+          userName: this.query.username,
+          pageSize: this.query.pageSize,
+          pageIndex: this.query.pageIndex
+        }
+      }).then(res => {
+        this.tableData = res.data.userList.content
+        this.pageTotal = res.data.length || 50
       })
     },
     // 触发搜索按钮

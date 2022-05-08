@@ -41,6 +41,13 @@ module.exports = {
                 pathRewrite: {
                     '^/admin': 'admin'
                 }
+            },
+            '/websocket': {
+                target: process.env.VUE_APP_BASE_API,
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/websocket': 'websocket'
+                }
             }
         }
     },
