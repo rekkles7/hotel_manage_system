@@ -139,7 +139,6 @@ export default {
         console.log('WebSocket连接成功    状态码：' + this.websocket.readyState)
       },
       setOnmessageMessage (event) {
-        // 根据服务器推送的消息做自己的业务处理
         this.$notify({
           title: '新订单',
           message: '您有一条新的订单，请及时处理！',

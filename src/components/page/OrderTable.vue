@@ -15,7 +15,14 @@
             class="handle-del mr10"
             @click="updateOperation('delete')"
         >批量删除</el-button>
-        <el-input v-model="query.name" placeholder="订单信息" class="handle-input mr10"></el-input>
+        <el-select v-model="query.orderStatus" placeholder="订单状态" class="handle-select mr10">
+          <el-option key="1" label="待支付" value="0"></el-option>
+          <el-option key="2" label="待确认" value="1"></el-option>
+          <el-option key="3" label="待入住" value="2"></el-option>
+          <el-option key="4" label="已入住" value="3"></el-option>
+          <el-option key="5" label="已取消" value="4"></el-option>
+        </el-select>
+        <el-input v-model="query.orderUserName" placeholder="订单信息" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
         <el-button type="danger" icon="el-icon-edit" @click="updateOperation('put')">修改</el-button>
         <el-button type="warning" icon="el-icon-download" @click="">导出</el-button>
@@ -54,6 +61,7 @@
             <el-tag v-else>已取消</el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="orderCreateTime" sortable label="创建时间"></el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template slot-scope="scope">
             <el-button
@@ -120,8 +128,8 @@ export default {
   data(){
     return {
       query: {
-        address: '',
-        name: '',
+        orderStatus: '',
+        orderUserName: '',
         pageIndex: 1,
         pageSize: 10
       },
@@ -163,13 +171,19 @@ export default {
     },
     getOrderInfo(){
       let adminId = this.$store.getters.getUserId;
+      console.log(this.query)
       this.$request.get('admin/order/selectAllOrderByAdminId',{
         params: {
-          adminId: adminId
+          adminId: adminId,
+          orderStatus: this.query.orderStatus || undefined,
+          orderUserName: this.query.orderUserName || undefined,
+          pageIndex: this.query.pageIndex,
+          pageSize: this.query.pageSize
         }
       }).then(res =>{
-        this.tableData = res.data.data
-        this.pageTotal = res.data.data.length || 50
+        console.log(res.data)
+        this.tableData = res.data.records
+        this.pageTotal = res.data.total || 50
       })
     },
     updateOperation(){
@@ -186,7 +200,7 @@ export default {
     // 触发搜索按钮
     handleSearch() {
       this.$set(this.query, 'pageIndex', 1);
-      this.getUserInfo();
+      this.getOrderInfo();
     },
     // 删除操作
     handleDelete(index, row) {
@@ -229,7 +243,7 @@ export default {
     // 分页导航
     handlePageChange(val) {
       this.$set(this.query, 'pageIndex', val);
-      this.getUserInfo();
+      this.getOrderInfo();
     }
   }
 }
